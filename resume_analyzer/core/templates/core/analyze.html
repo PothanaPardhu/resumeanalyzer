@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+{% block title %}Analyze Job{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-7 fade-in-up">
+    <div class="glass-card p-4 card-focus">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h4 class="mb-0 text-white"><i class="bi bi-file-earmark-text me-2 text-info"></i> Job Description</h4>
+        <span class="badge badge-soft">Step 1 of 2</span>
+      </div>
+      <p class=" small mb-3">
+        Paste the full job description so the analyzer can understand required skills, keywords, and responsibilities.
+      </p>
+   <form method="post" novalidate>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="d-flex justify-content-end mt-3">
+    <button type="submit" class="btn btn-success d-flex align-items-center">
+      <span class="spinner-border spinner-border-sm me-2 d-none" id="analyzeSpinner"></span>
+      <i class="bi bi-lightning-charge me-1"></i> Analyze
+    </button>
+  </div>
+</form>
+
+    </div>
+  </div>
+
+  <div class="col-lg-5 fade-in-up">
+    <div class="glass-card p-4 mb-3 card-focus">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="mb-0 text-white"><i class="bi bi-file-earmark-person me-2 text-primary"></i> Choose Resume</h5>
+        <a href="{% url 'upload_resume' %}" class="btn btn-sm btn-outline-light">
+          <i class="bi bi-upload me-1"></i> Upload new
+        </a>
+      </div>
+      {% if resumes %}
+        <ul class="list-group list-group-flush list-group-dark">
+          {% for r in resumes %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <span class="fw-semibold">{{ r.file.name|cut:"resumes/" }}</span><br>
+                <small class="">Uploaded {{ r.uploaded_at|date:"Y-m-d H:i" }}</small>
+              </div>
+              <a class="btn btn-sm btn-primary"
+                 href="{% url 'analyze_with_resume' r.id %}">
+                Use
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class=" mb-0">
+          No resumes yet. <a href="{% url 'upload_resume' %}">Upload one</a> to start analyzing.
+        </p>
+      {% endif %}
+    </div>
+
+    <div class="small fade-in-up">
+      Tip: Keep different resumes for Backend, Full‑stack, Data, etc., and run the same JD against each one.
+    </div>
+  </div>
+</div>
+{% endblock %}

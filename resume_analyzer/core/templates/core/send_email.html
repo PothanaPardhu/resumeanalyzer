@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+{% block title %}Send Email{% endblock %}
+{% block content %}
+<div class="row justify-content-center fade-in-up">
+  <div class="col-md-7">
+    <div class="glass-card p-4 card-focus">
+      <h4 class="mb-3 text-white"><i class="bi bi-send-check me-2 text-success"></i>Send Email</h4>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">To</label>
+          <input type="email" name="to_email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Message Preview</label>
+          <textarea class="form-control" rows="10" readonly>{{ analysis.email_draft }}</textarea>
+        </div>
+        <div class="d-flex justify-content-end gap-2">
+          <a href="{% url 'analysis_result' analysis.id %}" class="btn btn-outline-light">
+            Cancel
+          </a>
+     <button type="submit" class="btn btn-success">
+  <i class="bi bi-send-fill me-1"></i> Send
+</button>
+
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

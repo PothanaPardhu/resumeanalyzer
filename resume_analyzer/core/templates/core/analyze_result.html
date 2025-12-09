@@ -1,0 +1,81 @@
+{% extends 'core/base.html' %}
+{% block title %}Analysis Result{% endblock %}
+{% block content %}
+<div class="glass-card p-4 card-focus fade-in-up">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <div class="mb-2">
+      <h3 class="mb-1 text-white">
+        <i class="bi bi-clipboard-check me-2 text-success"></i>
+        {{ analysis.jd.title }}
+      </h3>
+      <p class="text-muted small mb-0">
+        Analyzed on {{ analysis.created_at|date:"Y-m-d H:i" }}
+      </p>
+    </div>
+    <div class="text-end mb-2">
+      <span class="text-muted small d-block">Overall match</span>
+      <div class="display-6 fw-bold text-success">{{ analysis.score }}%</div>
+      <div class="progress mt-1" style="height: 6px; width: 140px; margin-left:auto;">
+        <div class="progress-bar bg-success" style="width: {{ analysis.score }}%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="border-secondary">
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <h5 class="text-white mb-2"><i class="bi bi-lightbulb me-2 text-warning"></i> Suggestions</h5>
+      <p class="text-muted small mb-2">
+        Use these points to tune your resume and better reflect what this role is asking for.
+      </p>
+      <pre class="pre-block" style="max-height: 340px; overflow:auto; white-space: pre-wrap;">
+{{ analysis.suggestions }}
+      </pre>
+    </div>
+
+    <div class="col-lg-6">
+      <h5 class="text-white mb-2"><i class="bi bi-envelope-paper-heart me-2 text-pink"></i> Personalized Email</h5>
+      <p class="text-muted small mb-2">
+        Minor edits are fine; keep it concise and role‑specific.
+      </p>
+      <pre class="pre-block mb-3" style="max-height: 260px; overflow:auto; white-space: pre-wrap;">
+{{ analysis.email_draft }}
+      </pre>
+
+      <h5 class="text-white mb-2"><i class="bi bi-github me-2"></i> GitHub Matches</h5>
+      <p class="small mb-2">
+        Highlight these projects in your email and interviews.
+      </p>
+      <ul class="list-group list-group-flush list-group-dark mb-3">
+        {% for g in analysis.github_matches %}
+          <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="me-3">
+              <a href="{{ g.url }}" target="_blank" class="fw-semibold text-decoration-none text-info">
+                {{ g.name }}
+              </a>
+              <div class="small">
+                {{ g.description }}
+              </div>
+            </div>
+            <a href="{{ g.url }}" target="_blank" class="btn btn-sm btn-outline-light">
+              <i class="bi bi-box-arrow-up-right"></i>
+            </a>
+          </li>
+        {% empty %}
+          <li class="list-group-item">No matches found.</li>
+        {% endfor %}
+      </ul>
+
+      <div class="d-flex justify-content-end gap-2">
+        <a class="btn btn-outline-light" href="{% url 'dashboard' %}">
+          Back
+        </a>
+        <a class="btn btn-success" href="{% url 'send_email' analysis.id %}">
+          <i class="bi bi-send-fill me-1"></i> Send Email
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

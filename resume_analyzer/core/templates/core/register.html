@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="row justify-content-center fade-in-up">
+  <div class="col-md-6">
+    <div class="glass-card p-4 card-focus">
+      <h3 class="mb-3 text-center text-white"><i class="bi bi-person-plus me-2"></i>Create account</h3>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+      <button type="submit" class="btn btn-accent w-100">Register</button>
+      </form>
+      <p class="mt-3 text-center small text-muted mb-0">
+        Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

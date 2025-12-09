@@ -1,0 +1,248 @@
+/* Background gradient for whole app */
+.bg-gradient-primary {
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #3b82f6 0, transparent 50%),
+              radial-gradient(circle at bottom right, #ec4899 0, transparent 55%),
+              linear-gradient(135deg, #020617 0%, #020617 40%, #0f172a 100%);
+  color: #e5e7eb;
+}
+
+/* Glassmorphism containers */
+.glass-card {
+  background: rgba(15, 23, 42, 0.82);
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(22px);
+
+  /* positioning context for pseudo-elements and safe stacking */
+  position: relative;
+  z-index: 0;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Navbar glass */
+.glass-nav {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+  position: relative;
+  z-index: 1200;
+}
+
+/* Footer */
+.footer-glass {
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+/* Buttons visuals */
+.btn-accent {
+  background: linear-gradient(135deg, #f97316, #e11d48);
+  border: none;
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.45);
+}
+.btn-accent:hover {
+  box-shadow: 0 12px 28px rgba(236, 72, 153, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  border: none;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+}
+.btn-primary:hover {
+  box-shadow: 0 14px 36px rgba(79, 70, 229, 0.7);
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  box-shadow: 0 10px 26px rgba(34, 197, 94, 0.4);
+}
+.btn-success:hover {
+  box-shadow: 0 14px 34px rgba(22, 163, 74, 0.7);
+  transform: translateY(-1px);
+}
+
+/* Card hover transitions */
+.card,
+.glass-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card:hover,
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.75);
+}
+
+/* Badges */
+.badge-soft {
+  background: rgba(56, 189, 248, 0.12);
+  color: #7dd3fc;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+/* Inputs on glass */
+.glass-card .form-control,
+.glass-card textarea,
+.glass-card select {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(148, 163, 184, 0.5);
+  color: #e5e7eb;
+}
+.glass-card .form-control:focus,
+.glass-card textarea:focus,
+.glass-card select:focus {
+  box-shadow: 0 0 0 1px #6366f1;
+  border-color: #6366f1;
+}
+
+/* Pre blocks */
+.pre-block {
+  background: rgba(15, 23, 42, 0.92);
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  padding: 1rem 1.25rem;
+  color: #e5e7eb;
+  font-size: 0.875rem;
+}
+
+/* Fade animation */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.fade-in-up.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Glowing border pseudo-element for cards */
+.card-focus {
+  position: relative;
+  z-index: 0;
+}
+.card-focus::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, rgba(59,130,246,0.7), rgba(236,72,153,0.7)) border-box;
+  mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+
+  /* Crucial: keep pseudo-element visually behind content and non-interactive */
+  z-index: -1 !important;
+  pointer-events: none !important;
+}
+.card-focus:hover::before {
+  opacity: 1;
+}
+
+/* List styles */
+.list-group-dark .list-group-item {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(31, 41, 55, 0.9);
+  color: #e5e7eb;
+}
+.list-group-dark .list-group-item:hover {
+  background: rgba(15, 23, 42, 0.98);
+}
+
+/* Container width */
+.page-container {
+  max-width: 1120px;
+}
+
+/* =========================
+   Robust interaction fixes (final)
+   - These rules are intentionally decisive: they keep visual appearance exactly as before
+     while guaranteeing that interactive elements inside cards receive pointer events.
+   ========================= */
+
+/* 1) Ensure card pseudo-elements (decorations) are always non-interactive and behind content */
+.glass-card::before,
+.glass-card::after,
+.card-focus::before,
+.card-focus::after,
+.footer-glass::before,
+.footer-glass::after,
+.glass-nav::before,
+.glass-nav::after {
+  pointer-events: none !important;
+  z-index: -2 !important;
+  /* keep them visually visible but below everything */
+}
+
+/* 2) Make the glass-card itself not capture pointer events in browsers that prefer parent over child,
+   but explicitly re-enable events for known interactive children. This two-step approach works robustly. */
+.glass-card {
+  pointer-events: none !important; /* allow clicks to pass through to children */
+}
+
+/* 3) Re-enable pointer events for interactive elements inside glass-card and force them on top */
+.glass-card button,
+.glass-card .btn,
+.glass-card a,
+.glass-card input,
+.glass-card textarea,
+.glass-card select,
+.glass-card label {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 99999 !important;      /* very high to override stacking issues */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 4) Ensure form controls stay selectable for copy/paste and focus */
+.glass-card .form-control,
+.glass-card textarea,
+.glass-card select {
+  user-select: text;
+  z-index: 100000 !important;
+}
+
+/* 5) Defensive: disable pointer-events on common full-screen overlays (if injected by extensions or scripts) */
+.background-overlay,
+.bg-overlay,
+.overlay,
+.backdrop,
+.modal-backdrop {
+  pointer-events: none !important;
+  z-index: -9999 !important;
+}
+
+/* 6) Small usability improvements: prevent accidental selection on clicks for buttons,
+   but keep links/selectable text behavior normal */
+button, .btn {
+  -webkit-user-select: none;
+  user-select: none;
+}
+a, .nav-link {
+  user-select: auto;
+}
+
+/* 7) Extra safeguard: if some script added inline pointer-events on a parent, ensure children still receive clicks */
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  touch-action: manipulation;
+}
+/* Prevent accidental click-through on decorative/large anchors inside cards.
+   Allow only real buttons/anchors with .btn or [role="button"] to be clickable. */
+.glass-card a:not(.btn):not([role="button"]) {
+  pointer-events: none !important;
+}
+
+
+/* End of file */
