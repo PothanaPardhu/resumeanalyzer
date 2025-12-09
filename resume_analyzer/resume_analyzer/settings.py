@@ -1,19 +1,21 @@
-"""
-Django settings for resume_analyzer project.
-Copy this to resume_analyzer/settings.py
-"""
-
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+# ----------------------------
+# Base Directory + Load .env
+# ----------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = "YOUR_SECRET_KEY_HERE"
-
-DEBUG = True
+SECRET_KEY = os.getenv("SECRET_KEY")
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ["*"]
 
+# ----------------------------
+# Installed Apps
+# ----------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -24,6 +26,9 @@ INSTALLED_APPS = [
     "core",
 ]
 
+# ----------------------------
+# Middleware
+# ----------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -36,6 +41,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "resume_analyzer.urls"
 
+# ----------------------------
+# Templates
+# ----------------------------
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -54,6 +62,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "resume_analyzer.wsgi.application"
 
+# ----------------------------
+# Database (SQLite)
+# ----------------------------
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -61,6 +72,9 @@ DATABASES = {
     }
 }
 
+# ----------------------------
+# Password Validators
+# ----------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -76,11 +90,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# ----------------------------
+# Localization
+# ----------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True
 USE_TZ = True
 
+# ----------------------------
+# Static & Media
+# ----------------------------
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "core" / "static"]
 
@@ -89,10 +109,23 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Email: console backend for dev (prints email to console)
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "noreply@example.com"
+# ==========================================================
+#  *** REAL EMAIL SENDING CONFIGURATION (Gmail SMTP) ***
+# ==========================================================
 
-LOGIN_URL = "/login/"                # used by login_required
-LOGIN_REDIRECT_URL = "/dashboard/"   # where to go after a successful login
-LOGOUT_REDIRECT_URL = "/"            # after logout
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT"))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+
+# ==========================================================
+
+# ----------------------------
+# Authentication Redirects
+# ----------------------------
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/dashboard/"
+LOGOUT_REDIRECT_URL = "/"

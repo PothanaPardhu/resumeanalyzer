@@ -159,15 +159,43 @@ def analysis_result(request, analysis_id):
 
 
 @login_required
+@login_required
 def send_email(request, analysis_id):
     a = get_object_or_404(Analysis, id=analysis_id, resume__user=request.user)
+
     if request.method == "POST":
-        to_email = request.POST.get("to_email")
+        to_email = (request.POST.get("to_email") or "").strip()
+
+        # basic validation
+        if not to_email:
+            messages.error(request, "Please provide a recipient email address.")
+            return redirect("send_email", analysis_id=analysis_id)
+
+        if "@" not in to_email or "." not in to_email.split("@")[-1]:
+            messages.error(request, "Please provide a valid email address.")
+            return redirect("send_email", analysis_id=analysis_id)
+
         subject = f"Application for {a.jd.title} - {request.user.get_full_name() or request.user.username}"
+        message = a.email_draft or ""
+
         try:
-            send_mail(subject, a.email_draft, settings.DEFAULT_FROM_EMAIL, [to_email])
-            messages.success(request, "Email sent (console backend).")
-        except Exception:
-            messages.error(request, "Failed to send email.")
+            # will raise if SMTP/auth fails (fail_silently=False)
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[to_email],
+                fail_silently=False,
+            )
+        except Exception as exc:
+            # log full exception for debugging (kept server-side only)
+            import logging
+            logging.exception("send_email failed for analysis %s to %s", analysis_id, to_email)
+            messages.error(request, "Failed to send email right now. Please try again later.")
+            return redirect("analysis_result", analysis_id=analysis_id)
+
+        messages.success(request, "Email sent successfully.")
         return redirect("analysis_result", analysis_id=analysis_id)
+
+    # GET — render the form
     return render(request, "core/send_email.html", {"analysis": a})
